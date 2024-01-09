@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        #todo-app {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        #task-input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 8px;
+        }
+
+        #task-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .delete-button, .complete-button {
+            cursor: pointer;
+            color: red;
+            margin-left: 8px;
+        }
+
+        .clear-button {
+            background-color: #ddd;
+            color: #333;
+            padding: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            margin-top: 10px;
+            transition: background-color 0.3s ease-out;
+        }
+
+        .clear-button:hover {
+            background-color: #c0c0c0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="todo-app">
+        <input type="text" id="task-input" placeholder="Add a new task...">
+        <ul id="task-list"></ul>
+        <button class="clear-button" onclick="clearTasks()">Clear All</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const taskInput = document.getElementById("task-input");
+            const taskList = document.getElementById("task-list");
+
+            taskInput.addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                    addTask();
+                }
+            });
+
+            function addTask() {
+                const taskText = taskInput.value.trim();
+                if (taskText !== "") {
+                    const taskItem = document.createElement("li");
+                    taskItem.className = "task-item";
+                    taskItem.innerHTML = `
+                        <span>${taskText}</span>
+                        <span class="complete-button" onclick="completeTask(this)">Complete</span>
+                        <span class="delete-button" onclick="deleteTask(this)">Delete</span>
+                    `;
+                    taskList.appendChild(taskItem);
+                    taskInput.value = "";
+                }
+            }
+
+            window.completeTask = function (completeButton) {
+                const taskItem = completeButton.parentElement;
+                taskItem.classList.add("completed");
+                completeButton.remove();
+            };
+
+            window.deleteTask = function (deleteButton) {
+                const taskItem = deleteButton.parentElement;
+                taskItem.classList.add("deleted");
+                setTimeout(() => {
+                    taskItem.remove();
+                }, 300); // Delay removal to allow animation
+            };
+
+            window.clearTasks = function () {
+                const taskItems = document.querySelectorAll(".task-item");
+                taskItems.forEach(item => {
+                    item.classList.add("deleted");
+                    setTimeout(() => {
+                        item.remove();
+                    }, 300); // Delay removal to allow animation
+                });
+            };
+        });
+    </script>
+</body>
+</html>
